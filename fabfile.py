@@ -55,14 +55,6 @@ def openerp():
 @task
 def openerp_rsyslog():
     require.files.file(
-        '/etc/openerp/openerp-server.conf', 
-        source='files/etc/openerp/openerp-server.conf', 
-        owner = 'openerp', 
-        group='openerp', 
-        mode=640, 
-        use_sudo= True
-    )
-    require.files.file(
         '/etc/rsyslog.d/20-openerp.conf', 
         source='files/etc/rsyslog.d/20-openerp.conf', 
         owner='root', 
@@ -93,6 +85,11 @@ def openerp_rsyslog():
         group='root', 
         mode = 755, 
         use_sudo=True 
+    )
+    require.files.directory(
+        '/var/log/openerp',
+        mode=777, 
+        use_sudo=True
     )
     require.service.restarted('rsyslog')
     require.service.restarted('openerp')

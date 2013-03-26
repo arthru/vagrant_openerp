@@ -5,14 +5,14 @@ A simple tool that gets a message as first argument and send it by mail
 '''
 # Configuration
 
-SMTP_SSL=False
-SMTP_HOST=''
-SMTP_PORT=25
-SMTP_USER=None
-SMTP_PASSWORD=None
+SMTP_SSL=%(smtp_ssl)s
+SMTP_HOST='%(smtp_host)s'
+SMTP_PORT=$(smtp_port)d
+SMTP_USER='$(smtp_user)s'
+SMTP_PASSWORD='$(smtp_password)s'
 
 MAIL_FROM='OpenERP Server'
-MAIL_TO= ['']
+MAIL_TO= ['$(mail_to)s']
 
 # Code
 
@@ -39,11 +39,11 @@ if SMTP_USER and SMTP_PASSWORD:
     conn.login(SMTP_USER, SMTP_PASSWORD)
 
 MAIL_CONTENT='''Subject: [OPENERP] Server Error
-From: %s
-To: %s
+From: %%s
+To: %%s
 
-%s 
-''' % (MAIL_FROM, ", ".join(MAIL_TO), LOG_MESSAGE)
+%%s 
+''' %% (MAIL_FROM, ", ".join(MAIL_TO), LOG_MESSAGE)
 
 conn.sendmail(MAIL_FROM,MAIL_TO,MAIL_CONTENT)
 conn.quit()

@@ -1,9 +1,11 @@
 #//usr/bin/env python
 
 from fabric.api import *
+from fabric.utils import puts
 from fabtools.vagrant import vagrant
 from fabtools import deb
 from fabtools import require
+from fabtools import service
 
 SOURCES_LIST_CONTENT = '''
 deb mirror://mirrors.ubuntu.com/mirrors.txt precise main restricted universe multiverse
@@ -48,7 +50,7 @@ def openerp():
     ## OpenERP repository provides not signed packages, we can't use
     ## require.deb.package as it does not permit to force the installation
     ## of unsigned packages
-    #require.deb.package('cpenerp')
+    #require.deb.package('openerp')
     if not deb.is_installed('openerp'):
         deb.install('openerp', options=['--force-yes'])
 
@@ -70,26 +72,15 @@ def openerp_rsyslog():
         mode='755',
         use_sudo=True
     )
-    require.files.template_file(
-        '/usr/local/bin/mail-openerp-err.py',
-        template_source='files/usr/local/bin/mail-openerp-err.py',
-        context = {
-            'smtp_ssl':None,
-            'smtp_host':None,
-            'smtp_port':None,
-            'smtp_user':None,
-            'smtp_password':None,
-            'mail_to':None
-        }, 
-        owner='root',
-        group='root', 
-        mode = 755, 
-        use_sudo=True 
-    )
     require.files.directory(
         '/var/log/openerp',
         mode=777, 
         use_sudo=True
     )
     require.service.restarted('rsyslog')
-    require.service.restarted('openerp')
+    ## we need a full stop and start as we updated /etc/init.d/openerp file
+    puts('Stopping openerp')
+    service.stop('openerp')
+    puts('Starting openerp')
+    service.start('openerp')
+

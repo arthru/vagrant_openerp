@@ -20,6 +20,12 @@ You must install `vagrant 1.0.x <http://rubygems.org/gems/vagrant/versions/1.0.7
     pip install fabtools
     gem install vagrant
 
+Note: if you are using Debian 7.4 (Wheezy) vagrant can be installed through apt/aptitude, however fabtools is not included in its repositories and pip fails to install it, so I would recommend using:
+
+.. code-block:: sh
+    easy_install fabtools
+
+
 You should also add a box to vagrant :
 
 .. code-block:: sh
